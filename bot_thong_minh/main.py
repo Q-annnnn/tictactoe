@@ -4,7 +4,7 @@ import player
 from os import system
 
 def main():
-    board = Board(4, 4, 3)
+    board = Board(15, 15, 5)
 
     playerX = player.HumanPlayer()
     playerO = player.BotPlayer('O', 2)

@@ -19,18 +19,18 @@ class Board():
     def possible_moves(self): # returns list of all empty cells' (x, y)
         moves = [] # Create an empty list of moves to store the positions of the empty cells
 
-        for y, row in enumerate(self.board): # the enumerate return both the index of the row and the row itself 
+        for y, row in enumerate(self.board): # the enumerate return both the index of the row and the row itself
             for x, cell in enumerate(row): ## the enumerate return both the index of the cell and the cell itself
                 if cell == ' ':
                     moves.append((x, y)) # If the cell is empty, its position is added to the moves list
 
         return moves # Return list moves
     
-    def near_moves(self): # find the possible moves close to the existing ones                                                           
+    def near_moves(self): # find the possible moves close to the existing ones
         moves = self.possible_moves() # Get list of all possible moves (all empty cells on the board)
         impossible_moves = [] # Store the position of all filled cells
         near_moves = [] # Store the positions of the empty cells that close to the filled ones
-        for y, row in enumerate(self.board): 
+        for y, row in enumerate(self.board):
             for x, cell in enumerate(row):
                 if cell != ' ': # If cell is filled
                     impossible_moves.append((x, y)) # Added to impossible_moves
@@ -40,7 +40,7 @@ class Board():
         max_width = max(move[1] for move in impossible_moves) # Max width among all filled cells
         for move in moves: # Loop in all empty cells
             if move[0] in range(min_height-2, max_height+2) and move[1] in range(min_width-2, max_width+2): # Find empty cells in range 2
-                near_moves.append((move[0], move[1])) 
+                near_moves.append((move[0], move[1]))
         return near_moves
 
         
