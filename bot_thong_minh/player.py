@@ -31,32 +31,18 @@ class RandomPlayer():
         
 
 class BotPlayer():
-    def __init__(self, player, search_depth=3):
-        self.player = player
+    def __init__(self, player, search_depth):
+        self.player = player # X or O
         self.other_player = 'O' if player == 'X' else 'X'
         self.search_depth = search_depth
-        self.transposition_table = {}  # Initialize the transposition table
-  
+    
     def get_move(self, state):
-        best_move = None
-        for depth in range(1, self.search_depth + 1):
-            result = self.minimax(state, 0, -math.inf, math.inf, True)
-            best_move = result['move']
-            if best_move is None:
-                break  # No more moves to explore at this depth
+        return self.minimax(state, 0, -math.inf, math.inf, True)['move']
 
-        return best_move
-    def minimax(self, state, depth, alpha, beta, maximizing):
-        # Check if the current state is already in the transposition table
+    def minimax(self, state, depth, alpha, beta, maximizing): # returns optimal move
         if state.gameover() or depth == self.search_depth:
-            key = tuple(map(tuple, state.board))
-            if key in self.transposition_table:
-                return self.transposition_table[key]
+            return {'move': None, 'score': state.evaluate(self.player)}
 
-            score = state.evaluate(self.player)
-            result = {'move': None, 'score': score}
-            self.transposition_table[key] = result
-            return result
         # if depth == 0:
         #     moves = []
         #     best_score = -math.inf
@@ -84,32 +70,30 @@ class BotPlayer():
             for move in state.near_moves():
                 state.set_move(move, self.player)
                 check = self.minimax(state, depth+1, alpha, beta, False)
-                state.set_move(move, ' ')
 
-                check['move'] = move
+                state.set_move(move, ' ') # undo move
+                check['move'] = move # attribute move to its resulting board state
 
                 if check['score'] > best['score']:
                     best = check
-
+                
                 alpha = max(alpha, best['score'])
-                if alpha >= beta:
+                if best['score'] >= beta:
                     break
             return best
         else:
             best = {'move': None, 'score': math.inf}
-            for move in state.near_moves():
+            for move in state.possible_moves():
                 state.set_move(move, self.other_player)
-                if state.iswin(self.other_player):
-                    score = -10  # Defensive move to prevent opponent from winning
-                else:
-                    check = self.minimax(state, depth+1, alpha, beta, True)
-                    score = check['score']
+                check = self.minimax(state, depth+1, alpha, beta, True)
 
-                state.set_move(move, ' ')
-                if score < best['score']:
-                    best = {'move': move, 'score': score}
+                state.set_move(move, ' ') # undo move
+                check['move'] = move # attribute move to its resulting board state
 
+                if check['score'] < best['score']:
+                    best = check
+                
                 beta = min(beta, best['score'])
-                if alpha >= beta:
+                if best['score'] <= alpha:
                     break
             return best
