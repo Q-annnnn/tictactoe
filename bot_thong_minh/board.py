@@ -3,7 +3,7 @@ from copy import deepcopy # Create a new copy of an object with its own unique m
 
 alphabet = list(string.ascii_uppercase) # Create a list of all uppercase letters from A-Z
 
-class Board():
+class Board(): 
     def __init__(self, width, height, winstreak):
         self.width = width
         self.height = height
